@@ -2,7 +2,9 @@ class HangpersonGame
 
   # add the necessary class methods, attributes, etc. here
   # to make the tests in spec/hangperson_game_spec.rb pass.
-
+  
+  LOSE = 7
+  
   # Get a word from remote "random word" service
 
   # def initialize()
@@ -23,21 +25,22 @@ class HangpersonGame
   attr_accessor :wrong_guesses
   
   def guess(letter)
-    raise ArgumentError if  letter == nil || letter == '' || letter.match(/[^a-zA-Z]/)
-    inputLetter = letter.downcase
-    if not (guesses.include? inputLetter) || (wrong_guesses.include? inputLetter)
-      if word.include? inputLetter
-        guesses << inputLetter
-      else
-        wrong_guesses << inputLetter
-      end
-      #@guessCount = @guessCount - 1
+    raise ArgumentError if  letter.nil? || letter.empty? || letter.match(/[^a-zA-Z]/)
+    letter.downcase!
+    return false if 
+      (guesses.include? letter) || (wrong_guesses.include? letter)
+    if word.include? letter
+      guesses << letter
     else
-      return false
+      wrong_guesses << letter
     end
+    return true
   end
   
   def check_win_or_lose
+    return :lose if wrong_guesses.length >= LOSE
+    word_with_guesses == word ? :win : :play 
+=begin
     if guesses.chars.sort.join == word.chars.sort.join
       return :win
     elsif wrong_guesses.length == 7
@@ -45,9 +48,14 @@ class HangpersonGame
     else
       return :play
     end
+=end
   end
   
   def word_with_guesses
+    word.gsub(/./) do |letter|
+      (guesses.include? letter)? letter : "-"
+    end
+=begin    
     displayed = ""
     word.split("").map do |char|
       if guesses.include? char
@@ -58,6 +66,7 @@ class HangpersonGame
       end
     end
     return displayed
+=end
   end
     
   # You can test it by running $ bundle exec irb -I. -r app.rb
