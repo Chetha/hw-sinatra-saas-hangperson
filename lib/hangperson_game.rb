@@ -23,10 +23,7 @@ class HangpersonGame
   attr_accessor :wrong_guesses
   
   def guess(letter)
-    if  letter == nil || letter == '' || letter.match(/[^a-zA-Z]/)
-      message = "Invalid"
-      raise ArgumentError
-    end 
+    raise ArgumentError if  letter == nil || letter == '' || letter.match(/[^a-zA-Z]/)
     inputLetter = letter.downcase
     if not (guesses.include? inputLetter) || (wrong_guesses.include? inputLetter)
       if word.include? inputLetter
@@ -36,7 +33,6 @@ class HangpersonGame
       end
       #@guessCount = @guessCount - 1
     else
-      message = "Repeated"
       return false
     end
   end
